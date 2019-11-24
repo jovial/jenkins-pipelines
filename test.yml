@@ -11,6 +11,8 @@
         line: "{{ item }}"
       no_log: true
       with_items: "{{ host_keys }}"
+    - pause:
+        minutes: 5
 
 - hosts: cumulus-seed
   tasks:
