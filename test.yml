@@ -9,6 +9,7 @@
         create: yes
         state: present
         line: "{{ item }}"
+      no_log: true
       with_items: "{{ host_keys }}"
 
 - hosts: cumulus-seed

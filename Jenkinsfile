@@ -7,7 +7,7 @@ pipeline {
    stages {
       stage('Hello') {
          steps {
-            ansiblePlaybook(credentialsId: 'id_rsa_jenkins', inventory: 'inventory', playbook: 'test.yml', vaultCredentialsId:'vault-password')
+            ansiblePlaybook(credentialsId: 'id_rsa_jenkins', inventory: 'inventory', playbook: 'test.yml', vaultCredentialsId:'vault-password', extras: '-vvv')
          }
 
       }
