@@ -1,3 +1,4 @@
 ---
 
 ansible_ssh_extra_args: "{{ secrets_ssh_args }}"
+host_keys: "{{ secrets_host_keys }}"
