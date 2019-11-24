@@ -1,7 +1,21 @@
 ---
+- hosts: localhost
+  tasks:
+    - name: get port, default 22
+      delegate_to: localhost
+      set_fact:
+        ansible_port: "{{ hostvars[inventory_hostname]['ansible_port'] | default('22') }}"
 
+    - name: Ensure ssh host key known
+      delegate_to: localhost
+      lineinfile:
+        dest: ~/.ssh/known_hosts
+        create: yes
+        state: present
+        line: "{{ lookup('pipe', 'ssh-keyscan -trsa -p' + ansible_port + ' ' + ansible_host) }}"
+        
 - hosts: cumulus-seed
   tasks:
-  - file:
+    - file:
       path: /tmp/hello-from-jenkins
       state: touch
