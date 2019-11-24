@@ -13,8 +13,6 @@
       with_items: "{{ host_keys }}"
     - debug:
         var: ansible_ssh_private_key_file
-    - pause:
-        minutes: 5
 
 - hosts: cumulus-seed
   tasks:
