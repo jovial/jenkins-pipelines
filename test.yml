@@ -1,0 +1,7 @@
+---
+
+- hosts: cumulus-seed
+  tasks:
+  - file:
+      path: /tmp/hello-from-jenkins
+      state: touch
