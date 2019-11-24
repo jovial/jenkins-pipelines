@@ -1,5 +1,6 @@
 ---
 - hosts: cumulus-seed
+  gather_facts: false
   tasks:
     - name: Ensure ssh host key known
       delegate_to: localhost
@@ -9,6 +10,9 @@
         state: present
         line: >-
           {{ ansible_host }} ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC9+XdEzhVKhCzfIPv8bDESLx0DeXy9qUI6BeW5XWmj2CppmfWlt04w239RIJarq4fHtGgSdsXDf8mWBzDhe7dCPP4MOV+8bFzww63jOD9PPLUphHl8T93Vwna7Q3wg5TLQAIGYGwHGxkDGtv+ev739ilkVpWIrN7saNCPtsBS5EQzbXc4DMBGgQPLDqv0kTsRniDa2Tn0br0usp4+O0cidbG3ar/z5ZO3eYBw31MVdVvdjVPtfetUK9SyZs1LusigbQtzv6lAGZrYY2nwy/5tjt56nOYTyctC+T5Bk47ak+sih+VQQ1lmw9PPgcINxq0WXXnbhgp/15sHSvH9+KPRl
+
+- hosts: cumulus-seed
+  tasks:
     - file:
         path: /tmp/hello-from-jenkins
         state: touch
