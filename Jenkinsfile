@@ -6,7 +6,7 @@ pipeline {
 
    stages {
       stage('Hello') {
-         WORKDIR = sh (
+         def WORKDIR = sh (
             script: 'pwd',
             returnStdout: true
          )
