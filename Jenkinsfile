@@ -8,7 +8,10 @@ pipeline {
       stage('Hello') {
          steps {
             sshagent(['jenkins_id_rsa']) {
-               ansiblePlaybook(inventory: 'inventory', playbook: 'test.yml', vaultCredentialsId:'vault-password', extras: '-vvv')
+               // Using the agent resets our directory
+               dir("${env.WORKSPACE}/jenkins-pipelines"){
+                  ansiblePlaybook(inventory: 'inventory', playbook: 'test.yml', vaultCredentialsId:'vault-password', extras: '-vvv')
+               }
             }
          }
 
