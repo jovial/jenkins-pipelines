@@ -7,9 +7,13 @@ pipeline {
    stages {
       stage('Hello') {
          steps {
+            WORKDIR = sh (
+               script: 'pwd',
+               returnStdout: true
+            )
             sshagent(['jenkins_id_rsa']) {
                // Using the agent resets our directory
-               dir("${env.WORKSPACE}/jenkins-pipelines"){
+               dir("${WORKDIR}"){
                   ansiblePlaybook(inventory: 'inventory', playbook: 'test.yml', vaultCredentialsId:'vault-password', extras: '-vvv')
                }
             }
