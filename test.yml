@@ -1,9 +1,8 @@
 ---
-- hosts: cumulus-seed
+- hosts: localhost
   gather_facts: false
   tasks:
     - name: Ensure ssh host key known
-      delegate_to: localhost
       lineinfile:
         dest: ~/.ssh/known_hosts
         create: yes
@@ -11,8 +10,6 @@
         line: "{{ item }}"
       no_log: true
       with_items: "{{ host_keys }}"
-    - set_fact:
-        ansible_ssh_extra_args: "{{ secrets_ssh_args }}"
 
 - hosts: cumulus-seed
   tasks:

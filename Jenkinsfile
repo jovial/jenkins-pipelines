@@ -7,7 +7,9 @@ pipeline {
    stages {
       stage('Hello') {
          steps {
-            ansiblePlaybook(credentialsId: 'jenkins_id_rsa', inventory: 'inventory', playbook: 'test.yml', vaultCredentialsId:'vault-password', extras: '-vvv')
+            sshagent(['jenkins_id_rsa']) {
+               ansiblePlaybook(inventory: 'inventory', playbook: 'test.yml', vaultCredentialsId:'vault-password', extras: '-vvv')
+            }
          }
 
       }

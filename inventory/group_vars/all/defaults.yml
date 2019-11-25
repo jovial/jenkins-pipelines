@@ -1,3 +1,6 @@
 ---
 
 host_keys: "{{ secrets_host_keys }}"
+
+# This adds in a jump host
+ansible_ssh_extra_args: "{{ secrets_ssh_args }}"
