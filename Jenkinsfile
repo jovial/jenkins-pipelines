@@ -6,10 +6,9 @@ pipeline {
 
    stages {
       stage('Hello') {
-         def WORKDIR = sh (
-            script: 'pwd',
-            returnStdout: true
-         )
+         environment {
+            WORKDIR = sh (script: 'pwd', returnStdout: true)
+         }
          steps {
             sshagent(['jenkins_id_rsa']) {
                // Using the agent resets our directory
