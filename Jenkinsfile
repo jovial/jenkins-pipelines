@@ -6,11 +6,11 @@ pipeline {
 
    stages {
       stage('Hello') {
+         WORKDIR = sh (
+            script: 'pwd',
+            returnStdout: true
+         )
          steps {
-            WORKDIR = sh (
-               script: 'pwd',
-               returnStdout: true
-            )
             sshagent(['jenkins_id_rsa']) {
                // Using the agent resets our directory
                dir("${WORKDIR}"){
