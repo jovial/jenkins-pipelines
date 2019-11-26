@@ -6,6 +6,9 @@ pipeline {
 
    stages {
       stage('Test') {
+         environment { 
+            ANSIBLE_CONFIG = "${env.WORKSPACE}/ansible.cfg"
+         }
          steps {
             script {
                currentBuild.displayName = "${params.pattern}"
