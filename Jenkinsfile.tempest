@@ -20,5 +20,12 @@ pipeline {
          }
 
       }
+
+      stage('Publish') {
+         steps {
+            sshPublisher(publishers: [sshPublisherDesc(configName: 'upload-store', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '_data/${BUILD_TAG}', remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'rally-results/*')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+         }
+      }
+
    }
 }
