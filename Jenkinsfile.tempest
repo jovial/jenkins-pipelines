@@ -8,7 +8,7 @@ pipeline {
       stage('Test') {
          steps {
             sshagent(['jenkins_id_rsa']) {           
-               ansiblePlaybook(installation: 'ansible-2.9', 'inventory: 'inventory', playbook: 'tempest.yml', vaultCredentialsId:'vault-password', extras: '-vvv',
+               ansiblePlaybook(installation: 'ansible-2.9', inventory: 'inventory', playbook: 'tempest.yml', vaultCredentialsId:'vault-password', extras: '-vvv',
                   extraVars: [pattern:  '${params.pattern}'])
             }
          }
