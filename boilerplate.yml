@@ -1,0 +1,12 @@
+---
+- hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Ensure ssh host key known
+      lineinfile:
+        dest: ~/.ssh/known_hosts
+        create: yes
+        state: present
+        line: "{{ item }}"
+      no_log: true
+      with_items: "{{ host_keys }}"
