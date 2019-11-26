@@ -7,6 +7,9 @@ pipeline {
    stages {
       stage('Test') {
          steps {
+            script {
+               currentBuild.displayName = "${params.pattern}"
+            }
             sshagent(['jenkins_id_rsa']) {
                ansiColor('xterm') {           
                   ansiblePlaybook(installation: 'ansible-2.9', inventory: 'inventory', playbook: 'tempest.yml',
