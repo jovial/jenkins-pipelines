@@ -1,0 +1,52 @@
+---
+
+- import_playbook: boilerplate.yml
+
+- hosts: cumulus-seed
+  vars:
+    openrc_location: "{{ ansible_env.HOME }}/~openrc"
+    results_location: "{{ ansible_env.HOME }}/rally-results"
+  tasks:
+    - block:
+      - name: create a directory to house the results
+        file:
+          path: "{{ results_location }}"
+          state: directory
+          mode: 0777
+      
+      - name: create an openrc file
+        file:
+          content: "{{ openrc_file_contents }}"
+          dest: "{{ openrc_location }}"
+        no_log: True
+
+      - name: run tempest
+        docker_container:
+          name: rally
+          auto_remove: yes
+          entrypoint: /usr/bin/rally-verify-wrapper.sh
+          image: gwee/rally
+          volumes:
+            - rally_results:/home/rally/artefacts
+            - "{{ openrc_location }}:/home/rally/openrc:ro"
+          env:
+            TEMPEST_PATTERN: "{{ pattern | default('') }}"
+        
+      - name: synchronize files
+        synchronize:
+          src: "{{ results_location }}"
+          dest: results
+        delegate_to: cumulus-seed
+            
+      always:
+        - name: cleanup results
+          file:
+            path: "{{ results_location }}"
+            state: absent
+
+        - name: remove openrc file
+          file:
+            path: "{{ openrc_location }}"
+            state: absent
+
+

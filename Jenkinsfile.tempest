@@ -1,7 +1,7 @@
 pipeline {
    agent any
     parameters {
-        choice(name: 'CHOICE', choices: ['One', 'Two', 'Three'], description: 'Pick something')
+        string(defaultValue: "", description: 'Regex matching tempest tests', name: 'pattern')
     }
 
    stages {
