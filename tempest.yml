@@ -4,21 +4,20 @@
 
 - hosts: cumulus-seed
   vars:
-    openrc_location: "{{ ansible_env.HOME }}/~openrc"
+    openrc_location: "{{ ansible_env.HOME }}/openrc"
     results_location: "{{ ansible_env.HOME }}/rally-results"
   tasks:
     - block:
-      - name: create a directory to house the results
+      - name: create a directory to house the results on the remote
         file:
           path: "{{ results_location }}"
           state: directory
           mode: 0777
       
       - name: create an openrc file
-        file:
+        copy:
           content: "{{ openrc_file_contents }}"
           dest: "{{ openrc_location }}"
-        no_log: True
 
       - name: run tempest
         docker_container:
@@ -27,16 +26,28 @@
           entrypoint: /usr/bin/rally-verify-wrapper.sh
           image: gwee/rally
           volumes:
-            - rally_results:/home/rally/artefacts
+            - "{{ results_location }}:/home/rally/artefacts"
             - "{{ openrc_location }}:/home/rally/openrc:ro"
           env:
             TEMPEST_PATTERN: "{{ pattern | default('') }}"
+        become: true
+
+      - name: fixup permissions
+        file:
+          path: "{{ results_location }}"
+          owner: "{{ ansible_user }}"
+          recurse: true
+        become: true
         
       - name: synchronize files
         synchronize:
           src: "{{ results_location }}"
-          dest: results
-        delegate_to: cumulus-seed
+          dest: ./
+          mode: pull
+          archive: no
+          # For jump host
+          recursive: true
+          use_ssh_args: true
             
       always:
         - name: cleanup results
