@@ -14,7 +14,7 @@ pipeline {
                ansiColor('xterm') {           
                   ansiblePlaybook(installation: 'ansible-2.9', inventory: 'inventory', playbook: 'tempest.yml',
                      vaultCredentialsId:'vault-password', extras: '-vvv', colorized: true,
-                     extraVars: [pattern:  '${params.pattern}'])
+                     extraVars: [pattern:  "${params.pattern}"])
                }
             }
          }
