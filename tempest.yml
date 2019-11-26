@@ -1,10 +1,6 @@
 ---
 
-# Old version of ansible is installed by package manager
-# jenkins@2bf893dd8000:/$ ansible --version
-# ansible 2.2.1.0
-
-- include: boilerplate.yml
+- import_playbook: boilerplate.yml
 
 - hosts: cumulus-seed
   vars:
