@@ -8,8 +8,8 @@ if (params.environment == "production") {
 pipeline {
    agent any
     parameters {
-        string(defaultValue: "", description: 'Regex matching tempest tests', name: 'pattern')
         choice choices: ['test', 'production'], description: 'The OpenStack environment where the tests run.', name: 'environment'
+        string(defaultValue: "", description: 'Regex matching tempest tests', name: 'pattern')
     }
 
    stages {
