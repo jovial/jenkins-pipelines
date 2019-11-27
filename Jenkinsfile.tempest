@@ -11,7 +11,9 @@ pipeline {
          }
          steps {
             script {
-               currentBuild.displayName = "${params.pattern}"
+               currentBuild.description = """
+               pattern: ${params.pattern}
+               """
             }
             sshagent(['jenkins_id_rsa']) {
                ansiColor('xterm') {           
