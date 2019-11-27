@@ -13,6 +13,7 @@ pipeline {
     }
 
    stages {
+      when { not {triggeredBy 'SCMTrigger'} }
       stage('Test') {
          environment { 
             ANSIBLE_CONFIG = "${env.WORKSPACE}/ansible.cfg"
