@@ -20,9 +20,8 @@ pipeline {
          }
          steps {
             script {
-               currentBuild.description = """
-               pattern: ${params.pattern}
-               """
+               currentBuild.description = """\
+               pattern: ${params.pattern}""".stripIndent()
             }
             sshagent(['jenkins_id_rsa']) {
                ansiColor('xterm') {           
