@@ -13,8 +13,8 @@ pipeline {
     }
 
    stages {
-      when { not {triggeredBy 'SCMTrigger'} }
       stage('Test') {
+         when { not {triggeredBy 'SCMTrigger'} }
          environment { 
             ANSIBLE_CONFIG = "${env.WORKSPACE}/ansible.cfg"
          }
@@ -36,6 +36,7 @@ pipeline {
       }
 
       stage('Publish') {
+         when { not {triggeredBy 'SCMTrigger'} }
          steps {
             archiveArtifacts(artifacts: 'rally-results/*', onlyIfSuccessful: false)
             junit(testResults: 'rally-results/*junit.xml')
