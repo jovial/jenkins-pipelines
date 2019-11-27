@@ -2,7 +2,7 @@
 
 - import_playbook: boilerplate.yml
 
-- hosts: cumulus-seed
+- hosts: tempest-runner
   vars:
     openrc_location: "{{ ansible_env.HOME }}/openrc"
     results_location: "{{ ansible_env.HOME }}/rally-results"
