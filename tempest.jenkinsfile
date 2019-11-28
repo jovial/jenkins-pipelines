@@ -1,0 +1,65 @@
+
+def inventory = "inventory"
+
+if (params.environment == "production") {
+  inventory = "inventory-production"
+}
+
+def extraVars = [tempest_pattern:  params.tempest_pattern]
+
+pipeline {
+   agent any
+    parameters {
+        choice choices: ['test', 'production'], description: 'The OpenStack environment where the tests run.', name: 'environment'
+        string(defaultValue: '', description: 'Regex matching tempest tests', name: 'tempest_pattern')
+        string(defaultValue: '', description: 'Enter a build number to rerun the failed tests from that build.', name: 'rerun', trim: true)
+    }
+
+   stages {
+
+      state('Prepare') {
+            steps {
+                script {
+                    if (params.rerun) {
+                        copyArtifacts(projectName: currentBuild.projectName,
+                                    selector: specific("${params.rerun}"),
+                                    target: 'previous')
+                        extraVars['tempest_load_list_file'] = 'previous/failed-tests'
+                    }
+                }
+            }
+      }
+
+
+      stage('Test') {
+         when { not {triggeredBy 'GitHubPushCause'} }
+         environment {
+            ANSIBLE_CONFIG = "${env.WORKSPACE}/ansible.cfg"
+         }
+         steps {
+            script {
+               currentBuild.description = """\
+               pattern: ${params.tempest_pattern}""".stripIndent()
+            }
+            sshagent(['jenkins_id_rsa']) {
+               ansiColor('xterm') {
+                  ansiblePlaybook(installation: 'ansible-2.9', inventory: "${inventory}", playbook: 'tempest.yml',
+                     vaultCredentialsId:'vault-password', extras: '-vvv', colorized: true,
+                     extraVars: extraVars)
+               }
+            }
+         }
+
+      }
+
+      stage('Publish') {
+         when { not {triggeredBy 'GitHubPushCause'} }
+         steps {
+            archiveArtifacts(artifacts: 'rally-results/*', onlyIfSuccessful: false)
+            junit(testResults: 'rally-results/*junit.xml')
+            sshPublisher(publishers: [sshPublisherDesc(configName: 'upload-store', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '_data/${BUILD_TAG}', remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'rally-results/*.html')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+         }
+      }
+
+   }
+}
