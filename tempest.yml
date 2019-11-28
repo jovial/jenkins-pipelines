@@ -7,6 +7,7 @@
     openrc_location: "{{ ansible_env.HOME }}/openrc"
     results_location: "{{ ansible_env.HOME }}/rally-results"
     tempest_config_location: "{{ ansible_env.HOME }}/tempest.conf"
+    output_location: "{{ output_location | default(lookup('env', 'PWD')) }}"
   tasks:
     - block:
       - name: create a directory to house the results on the remote
@@ -51,7 +52,7 @@
       - name: synchronize files
         synchronize:
           src: "{{ results_location }}"
-          dest: "{{ lookup('env', 'PWD') }}"
+          dest: "{{ output_location }}"
           mode: pull
           archive: no
           recursive: true
