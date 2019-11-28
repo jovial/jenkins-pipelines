@@ -51,7 +51,7 @@
       - name: synchronize files
         synchronize:
           src: "{{ results_location }}"
-          dest: ./
+          dest: "{{ lookup('env', 'PWD') }}"
           mode: pull
           archive: no
           recursive: true
