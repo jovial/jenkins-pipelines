@@ -63,4 +63,10 @@ pipeline {
       }
 
    }
+
+   post {
+       cleanup{
+        deleteDir()
+    }
+   }
 }
