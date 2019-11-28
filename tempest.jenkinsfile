@@ -23,7 +23,7 @@ pipeline {
                    // Get failed results from a previous run
                     if (params.rerun) {
                         copyArtifacts(projectName: currentBuild.projectName,
-                                    selector: specific("${params.rerun}"),
+                                    selector: [$class: 'SpecificBuildSelector', buildNumber: "${params.rerun}"],
                                     target: 'previous')
                         extraVars['tempest_load_list_file'] = 'previous/failed-tests'
                     }
