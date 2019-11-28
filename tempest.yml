@@ -36,7 +36,7 @@
            -v {{ tempest_config_location }}:/home/rally/tempest-overrides.conf:ro
            {% endif -%}
            {% if tempest_load_list_file is defined -%}
-           -v {{ tempest_load_list_file }}:/home/rally/load-list:ro
+           -v {{ tempest_load_list_file }}:/home/rally/tempest-load-list:ro
            {% endif -%}
            -e "TEMPEST_PATTERN={{ tempest_pattern | default('') }}"
            gwee/rally
