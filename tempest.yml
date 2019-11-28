@@ -31,12 +31,12 @@
            docker run -it --rm --entrypoint=/usr/bin/rally-verify-wrapper.sh
            -v "{{ results_location }}:/home/rally/artifacts"
            -v "{{ openrc_location }}:/home/rally/openrc:ro"
-           {%- if tempest_config_contents is defined -%}
+           {% if tempest_config_contents is defined -%}
            -v {{ tempest_config_location }}:/home/rally/tempest-overrides.conf:ro
-           {%- endif -%}
-           {%- if tempest_load_list_file is defined -%}
+           {% endif -%}
+           {% if tempest_load_list_file is defined -%}
            -v {{ tempest_load_list_file }}:/home/rally/load-list:ro
-           {%- endif -%}
+           {% endif -%}
            -e "TEMPEST_PATTERN={{ tempest_pattern | default('') }}"
            gwee/rally
         become: true
