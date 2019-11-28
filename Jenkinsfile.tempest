@@ -9,7 +9,7 @@ pipeline {
    agent any
     parameters {
         choice choices: ['test', 'production'], description: 'The OpenStack environment where the tests run.', name: 'environment'
-        string(defaultValue: "", description: 'Regex matching tempest tests', name: 'pattern')
+        string(defaultValue: "", description: 'Regex matching tempest tests', name: 'tempest_pattern')
     }
 
    stages {
@@ -27,7 +27,7 @@ pipeline {
                ansiColor('xterm') {           
                   ansiblePlaybook(installation: 'ansible-2.9', inventory: "${inventory}", playbook: 'tempest.yml',
                      vaultCredentialsId:'vault-password', extras: '-vvv', colorized: true,
-                     extraVars: [pattern:  "${params.pattern}"])
+                     extraVars: [tempest_pattern:  "${params.tempest_pattern}"])
                }
             }
          }

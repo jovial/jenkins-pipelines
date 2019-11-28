@@ -32,7 +32,7 @@
            -v "{{ results_location }}:/home/rally/artifacts"
            -v "{{ openrc_location }}:/home/rally/openrc:ro"
            {%- if tempest_config_contents -%}-v {{ tempest_config_location }}:/home/rally/tempest-overrides.conf:ro{%- endif -%}
-           -e "TEMPEST_PATTERN={{ pattern | default('') }}"
+           -e "TEMPEST_PATTERN={{ tempest_pattern | default('') }}"
            gwee/rally
         become: true
 
