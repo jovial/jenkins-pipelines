@@ -25,7 +25,7 @@ pipeline {
                         copyArtifacts(projectName: currentBuild.projectName,
                                     selector: [$class: 'SpecificBuildSelector', buildNumber: "${params.rerun}"],
                                     target: 'previous')
-                        extraVars['tempest_load_list_file'] = 'previous/failed-tests'
+                        extraVars['tempest_load_list_file'] = "${env.WORKSPACE}/previous/failed-tests"
                     }
                      extraVars['work_location'] = env.WORKSPACE
                 }
