@@ -27,7 +27,7 @@ pipeline {
                                     target: 'previous')
                         extraVars['tempest_load_list_file'] = 'previous/failed-tests'
                     }
-                     extraVars['output_location'] = env.WORKSPACE
+                     extraVars['work_location'] = env.WORKSPACE
                 }
             }
       }
