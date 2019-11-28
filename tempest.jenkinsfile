@@ -5,7 +5,7 @@ if (params.environment == "production") {
   inventory = "inventory-production"
 }
 
-def extraVars = [tempest_pattern:  params.tempest_pattern, output_location: env.WORKSPACE]
+def extraVars = [tempest_pattern:  params.tempest_pattern]
 
 pipeline {
    agent any
@@ -27,6 +27,7 @@ pipeline {
                                     target: 'previous')
                         extraVars['tempest_load_list_file'] = 'previous/failed-tests'
                     }
+                     extraVars['output_location'] = env.WORKSPACE
                 }
             }
       }
