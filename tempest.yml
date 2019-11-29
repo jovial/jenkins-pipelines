@@ -7,6 +7,7 @@
     openrc_location: "{{ ansible_env.HOME }}/openrc"
     results_location: "{{ ansible_env.HOME }}/rally-results"
     tempest_config_location: "{{ ansible_env.HOME }}/tempest.conf"
+    load_list_location: "{{ ansible_env.HOME }}/tempest-load-list"
     work_location: "{{ work_location | default(lookup('env', 'PWD')) }}"
   tasks:
     - block:
@@ -15,11 +16,17 @@
           path: "{{ results_location }}"
           state: directory
           mode: 0777
-      
+
       - name: create an openrc file
         copy:
           content: "{{ openrc_file_contents }}"
           dest: "{{ openrc_location }}"
+
+      - name: Copy load list to remote host
+        copy:
+          src: "{{ tempest_load_list_file }}"
+          dest: "{{ load_list_location }}"
+        when: tempest_load_list_file is defined
 
       - name: (optional) create tempest overrides
         copy:
@@ -36,7 +43,7 @@
            -v {{ tempest_config_location }}:/home/rally/tempest-overrides.conf:ro
            {% endif -%}
            {% if tempest_load_list_file is defined -%}
-           -v {{ tempest_load_list_file }}:/home/rally/tempest-load-list:ro
+           -v {{ load_list_location }}:/home/rally/tempest-load-list:ro
            {% endif -%}
            -e "TEMPEST_PATTERN={{ tempest_pattern | default('') }}"
            gwee/rally
@@ -48,7 +55,7 @@
           owner: "{{ ansible_user }}"
           recurse: true
         become: true
-        
+
       - name: synchronize files
         synchronize:
           src: "{{ results_location }}"
@@ -58,11 +65,21 @@
           recursive: true
           # For jump host
           use_ssh_args: true
-            
+
       always:
         - name: cleanup results
           file:
             path: "{{ results_location }}"
+            state: absent
+
+        - name: cleanup load list
+          file:
+            path: "{{ load_list_location }}"
+            state: absent
+
+        - name: clean up tempest overrides
+          file:
+            path: "{{ tempest_config_location }}"
             state: absent
 
         - name: remove openrc file
