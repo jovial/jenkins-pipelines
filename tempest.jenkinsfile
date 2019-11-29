@@ -40,8 +40,14 @@ pipeline {
          }
          steps {
             script {
-               currentBuild.description = """\
-               pattern: ${params.tempest_pattern}""".stripIndent()
+               description = "environment: ${params.environment}"
+               if (params.tempest_pattern) {
+                  description += "\npattern: ${params.tempest_pattern}"
+               }
+               if (params.rerun) {
+                  description += "\nrerun: ${params.rerun}"
+               }
+               currentBuild.description = description
             }
             sshagent(['jenkins_id_rsa']) {
                ansiColor('xterm') {
