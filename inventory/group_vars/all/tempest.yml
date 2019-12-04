@@ -32,3 +32,8 @@ tempest_config_contents: |-
   [network]
   public_network_id = 9e59fc9e-61d7-4ebe-91ee-7c179a98a703
   floating_network_name = internet
+
+# There are limited resources available and this can cause test failures with
+# "No valid host was found". Reduce the concurrency to prevent us requesting too
+# many vcpus at once. Normally this defaults to number of cores on test runner.
+tempest_concurrency: 4

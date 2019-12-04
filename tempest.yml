@@ -46,6 +46,7 @@
            -v {{ load_list_location }}:/home/rally/tempest-load-list:ro
            {% endif -%}
            -e "TEMPEST_PATTERN={{ tempest_pattern | default('') }}"
+           -e "TEMPEST_CONCURRENCY={{ tempest_concurrency | default('') }}"
            gwee/rally
         become: true
 
