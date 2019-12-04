@@ -8,7 +8,7 @@
     results_location: "{{ ansible_env.HOME }}/rally-results"
     tempest_config_location: "{{ ansible_env.HOME }}/tempest.conf"
     load_list_location: "{{ ansible_env.HOME }}/tempest-load-list"
-    work_location: "{{ work_location | default(lookup('env', 'PWD')) }}"
+    work_location_defaulted: "{{ work_location | default(lookup('env', 'PWD')) }}"
   tasks:
     - block:
       - name: create a directory to house the results on the remote
@@ -60,7 +60,7 @@
       - name: synchronize files
         synchronize:
           src: "{{ results_location }}"
-          dest: "{{ work_location }}"
+          dest: "{{ work_location_defaulted }}"
           mode: pull
           archive: no
           recursive: true
