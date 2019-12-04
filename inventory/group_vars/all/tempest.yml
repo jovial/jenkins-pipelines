@@ -36,4 +36,4 @@ tempest_config_contents: |-
 # There are limited resources available and this can cause test failures with
 # "No valid host was found". Reduce the concurrency to prevent us requesting too
 # many vcpus at once. Normally this defaults to number of cores on test runner.
-tempest_concurrency: 4
+tempest_concurrency: 2
