@@ -11,6 +11,7 @@
     skip_list_location: "{{ ansible_env.HOME }}/tempest-skip-list"
     work_location_defaulted: "{{ work_location | default(lookup('env', 'PWD')) }}"
     rally_image_defaulted: "{{ rally_image | default('gwee/rally') }}"
+    rally_image_full: "{{ rally_image_defaulted }}{{ ':' ~ rally_tag if rally_tag is defined else '' }}"
   tasks:
     - block:
       - name: create a directory to house the results on the remote
@@ -43,10 +44,8 @@
         when: tempest_skip_list_contents is defined
 
       - name: pull rally image
-        docker_image:
-          name: "{{ rally_image_defaulted }}"
-          source: pull
-          tag: "{{ rally_tag | default(omit) }}"
+        command: docker image pull {{ rally_image_full }}
+        become: true
 
       - name: run tempest
         command: |-
@@ -64,7 +63,7 @@
            {% endif -%}
            -e "TEMPEST_PATTERN={{ tempest_pattern | default('') }}"
            -e "TEMPEST_CONCURRENCY={{ tempest_concurrency | default('') }}"
-           {{ rally_image_defaulted }}{{ ':' ~ rally_tag if rally_tag is defined else '' }}
+           {{ rally_image_full }}
         become: true
 
       - name: fixup permissions
