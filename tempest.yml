@@ -10,6 +10,7 @@
     load_list_location: "{{ ansible_env.HOME }}/tempest-load-list"
     skip_list_location: "{{ ansible_env.HOME }}/tempest-skip-list"
     work_location_defaulted: "{{ work_location | default(lookup('env', 'PWD')) }}"
+    rally_image_defaulted: "{{ rally_image | default('gwee/rally') }}"
   tasks:
     - block:
       - name: create a directory to house the results on the remote
@@ -41,6 +42,12 @@
           dest: "{{ skip_list_location }}"
         when: tempest_skip_list_contents is defined
 
+      - name: pull rally image
+        docker_image:
+          name: "{{ rally_image_defaulted }}"
+          source: pull
+          tag: "{{ rally_tag | default(omit) }}"
+
       - name: run tempest
         command: |-
            docker run -it --rm --entrypoint=/usr/bin/rally-verify-wrapper.sh
@@ -57,7 +64,7 @@
            {% endif -%}
            -e "TEMPEST_PATTERN={{ tempest_pattern | default('') }}"
            -e "TEMPEST_CONCURRENCY={{ tempest_concurrency | default('') }}"
-           gwee/rally
+           {{ rally_image_defaulted }}{{ ':' ~ rally_tag if rally_tag is defined else '' }}
         become: true
 
       - name: fixup permissions
