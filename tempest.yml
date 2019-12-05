@@ -8,6 +8,7 @@
     results_location: "{{ ansible_env.HOME }}/rally-results"
     tempest_config_location: "{{ ansible_env.HOME }}/tempest.conf"
     load_list_location: "{{ ansible_env.HOME }}/tempest-load-list"
+    skip_list_location: "{{ ansible_env.HOME }}/tempest-skip-list"
     work_location_defaulted: "{{ work_location | default(lookup('env', 'PWD')) }}"
   tasks:
     - block:
@@ -34,6 +35,12 @@
           dest: "{{ tempest_config_location }}"
         when: tempest_config_contents is defined
 
+      - name: (optional) create tempest skip list
+        copy:
+          content: "{{ tempest_skip_list_contents }}"
+          dest: "{{ skip_list_location }}"
+        when: tempest_skip_list_contents is defined
+
       - name: run tempest
         command: |-
            docker run -it --rm --entrypoint=/usr/bin/rally-verify-wrapper.sh
@@ -41,6 +48,9 @@
            -v "{{ openrc_location }}:/home/rally/openrc:ro"
            {% if tempest_config_contents is defined -%}
            -v {{ tempest_config_location }}:/home/rally/tempest-overrides.conf:ro
+           {% endif -%}
+           {% if tempest_skip_list_contents is defined -%}
+           -v {{ skip_list_location }}:/home/rally/tempest-skip-list:ro
            {% endif -%}
            {% if tempest_load_list_file is defined -%}
            -v {{ load_list_location }}:/home/rally/tempest-load-list:ro
@@ -76,6 +86,11 @@
         - name: cleanup load list
           file:
             path: "{{ load_list_location }}"
+            state: absent
+
+        - name: cleanup skip list
+          file:
+            path: "{{ skip_list_location }}"
             state: absent
 
         - name: clean up tempest overrides
