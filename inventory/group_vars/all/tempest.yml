@@ -35,3 +35,9 @@ tempest_config_contents: |-
 # "No valid host was found". Reduce the concurrency to prevent us requesting too
 # many vcpus at once. Normally this defaults to number of cores on test runner.
 tempest_concurrency: 2
+
+tempest_skip_list_contents: |-
+  # Details: {u'message': u'Compute host cpu-e-1041-ironic could not be found.', u'code': 404}
+  # See: https://bugs.launchpad.net/mos/+bug/1570864
+  tempest.api.compute.admin.test_hosts.HostsAdminTestJSON.test_show_host_detail: >-
+    test is broken when there are no ironic nodes available
