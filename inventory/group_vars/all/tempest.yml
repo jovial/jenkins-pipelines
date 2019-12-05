@@ -24,7 +24,6 @@ tempest_config_contents: |-
 
   [compute-feature-enabled]
   resize = true
-  console_output = true
   live_migration = true
 
   [network]
