@@ -14,7 +14,7 @@ tempest_config_contents: |-
 
   [compute]
   min_microversion = 2.1
-  max_microversion = 2.65
+  max_microversion = 2.72
 
   [service-clients]
   http_timeout = 600
