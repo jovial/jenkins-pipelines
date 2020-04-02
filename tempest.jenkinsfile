@@ -9,7 +9,7 @@ def extraVars = [tempest_pattern:  params.tempest_pattern]
 
 // First run should only sync the current build parameters otherwise we will
 // will need to do a full tempest run
-def syncOnly = params.sync or currentBuild.number == 1
+def syncOnly = (params.sync or currentBuild.number.equals(1))
 
 pipeline {
    agent any
