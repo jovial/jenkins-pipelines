@@ -17,7 +17,7 @@ pipeline {
         choice choices: ['test', 'production'], description: 'The OpenStack environment where the tests run.', name: 'environment'
         string(defaultValue: '', description: 'Regex matching tempest tests', name: 'tempest_pattern')
         string(defaultValue: '', description: 'Enter a build number to rerun the failed tests from that build.', name: 'rerun', trim: true)
-        booleanParam defaultValue: true, description: 'Only sync latest changes to pipeline. Do not run.', name: 'sync'
+        booleanParam defaultValue: false, description: 'Only sync latest changes to pipeline. Do not run.', name: 'sync'
     }
 
    stages {
