@@ -49,10 +49,10 @@ pipeline {
                }
                currentBuild.description = description
             }
-            sshagent(['jenkins_id_rsa']) {
+            sshagent(['tempest-ssh-private-key']) {
                ansiColor('xterm') {
-                  ansiblePlaybook(installation: 'ansible-2.9', inventory: "${inventory}", playbook: 'tempest.yml',
-                     vaultCredentialsId:'vault-password', extras: '-vvv', colorized: true,
+                  ansiblePlaybook(installation: 'tempest-ansible', inventory: "${inventory}", playbook: 'tempest.yml',
+                     vaultCredentialsId:'tempest-vault-password', extras: '-vvv', colorized: true,
                      extraVars: extraVars)
                }
             }
