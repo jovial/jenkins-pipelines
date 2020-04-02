@@ -7,12 +7,17 @@ if (params.environment == "production") {
 
 def extraVars = [tempest_pattern:  params.tempest_pattern]
 
+// First run should only sync the current build parameters otherwise we will
+// will need to do a full tempest run
+def syncOnly = params.sync or currentBuild.number == 1
+
 pipeline {
    agent any
     parameters {
         choice choices: ['test', 'production'], description: 'The OpenStack environment where the tests run.', name: 'environment'
         string(defaultValue: '', description: 'Regex matching tempest tests', name: 'tempest_pattern')
         string(defaultValue: '', description: 'Enter a build number to rerun the failed tests from that build.', name: 'rerun', trim: true)
+        booleanParam defaultValue: true, description: 'Only sync latest changes to pipeline. Do not run.', name: 'sync'
     }
 
    stages {
@@ -34,7 +39,7 @@ pipeline {
 
 
       stage('Test') {
-         when { not {triggeredBy 'GitHubPushCause'} }
+         when { not syncOnly }
          environment {
             ANSIBLE_CONFIG = "${env.WORKSPACE}/ansible.cfg"
          }
@@ -61,7 +66,7 @@ pipeline {
       }
 
       stage('Publish') {
-         when { not {triggeredBy 'GitHubPushCause'} }
+         when { not syncOnly }
          steps {
             archiveArtifacts(artifacts: 'rally-results/*', onlyIfSuccessful: false)
             junit(testResults: 'rally-results/*junit.xml')
