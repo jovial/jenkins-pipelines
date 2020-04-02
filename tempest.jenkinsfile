@@ -7,12 +7,17 @@ if (params.environment == "production") {
 
 def extraVars = [tempest_pattern:  params.tempest_pattern]
 
+// First run should only sync the current build parameters otherwise we will
+// will need to do a full tempest run
+def syncOnly = (params.sync || currentBuild.number == 1)
+
 pipeline {
    agent any
     parameters {
         choice choices: ['test', 'production'], description: 'The OpenStack environment where the tests run.', name: 'environment'
         string(defaultValue: '', description: 'Regex matching tempest tests', name: 'tempest_pattern')
         string(defaultValue: '', description: 'Enter a build number to rerun the failed tests from that build.', name: 'rerun', trim: true)
+        booleanParam defaultValue: false, description: 'Only sync latest changes to pipeline. Do not run.', name: 'sync'
     }
 
    stages {
@@ -34,7 +39,7 @@ pipeline {
 
 
       stage('Test') {
-         when { not {triggeredBy 'GitHubPushCause'} }
+         when { expression { return !syncOnly } }
          environment {
             ANSIBLE_CONFIG = "${env.WORKSPACE}/ansible.cfg"
          }
@@ -49,10 +54,10 @@ pipeline {
                }
                currentBuild.description = description
             }
-            sshagent(['jenkins_id_rsa']) {
+            sshagent(['tempest-ssh-private-key']) {
                ansiColor('xterm') {
-                  ansiblePlaybook(installation: 'ansible-2.9', inventory: "${inventory}", playbook: 'tempest.yml',
-                     vaultCredentialsId:'vault-password', extras: '-vvv', colorized: true,
+                  ansiblePlaybook(installation: 'tempest-ansible', inventory: "${inventory}", playbook: 'tempest.yml',
+                     vaultCredentialsId:'tempest-vault-password', extras: '-vvv', colorized: true,
                      extraVars: extraVars)
                }
             }
@@ -61,11 +66,10 @@ pipeline {
       }
 
       stage('Publish') {
-         when { not {triggeredBy 'GitHubPushCause'} }
+         when { expression { return !syncOnly } }
          steps {
             archiveArtifacts(artifacts: 'rally-results/*', onlyIfSuccessful: false)
             junit(testResults: 'rally-results/*junit.xml')
-            sshPublisher(publishers: [sshPublisherDesc(configName: 'upload-store', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '_data/${BUILD_TAG}', remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'rally-results/*.html')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
          }
       }
 
