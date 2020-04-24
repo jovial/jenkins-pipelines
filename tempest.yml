@@ -63,6 +63,12 @@
            {% endif -%}
            -e "TEMPEST_PATTERN={{ tempest_pattern | default('') }}"
            -e "TEMPEST_CONCURRENCY={{ tempest_concurrency | default('') }}"
+           {% if tempest_source is defined -%}
+           -e "TEMPEST_SOURCE={{ tempest_source }}"
+           {% endif -%}
+           {% if tempest_version is defined -%}
+           -e "TEMPEST_VERSION={{ tempest_version }}"
+           {% endif -%}
            {{ rally_image_full }}
         become: true
 
