@@ -16,6 +16,7 @@ pipeline {
     parameters {
         choice choices: ['test', 'production'], description: 'The OpenStack environment where the tests run.', name: 'environment'
         string(defaultValue: '', description: 'Regex matching tempest tests', name: 'tempest_pattern')
+        string(defaultValue: '', description: 'File containing tests to run. Directory is relative to files in the git checkout', name: 'tempest_load_list')
         string(defaultValue: '', description: 'Enter a build number to rerun the failed tests from that build.', name: 'rerun', trim: true)
         booleanParam defaultValue: false, description: 'Only sync latest changes to pipeline. Do not run.', name: 'sync'
     }
@@ -31,6 +32,9 @@ pipeline {
                                     selector: [$class: 'SpecificBuildSelector', buildNumber: "${params.rerun}"],
                                     target: "${env.WORKSPACE}/previous")
                         extraVars['tempest_load_list_file'] = "${env.WORKSPACE}/previous/rally-results/failed-tests"
+                    }
+                    if (tempest_load_list) {
+                       extraVars['tempest_load_list_file'] = "${env.WORKSPACE}/files/${params.tempest_load_list}"
                     }
                      extraVars['work_location'] = env.WORKSPACE
                 }
