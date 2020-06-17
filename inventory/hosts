@@ -1,2 +1,2 @@
 # This corresponds to one of the controllers which has access to the 318 network
-tempest-runner ansible_host=10.200.4.0 ansible_user=jenkins
+tempest-runner ansible_host=alaska-seed ansible_user=stack
