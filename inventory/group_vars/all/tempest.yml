@@ -52,6 +52,3 @@ tempest_config_contents: |-
   [scenario]
   dhcp_client = dhclient
 
-  [network-feature-enabled]
-  api_extensions = none
-
