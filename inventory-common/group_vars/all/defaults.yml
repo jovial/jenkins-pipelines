@@ -1,5 +1,4 @@
 ---
 
 host_keys: "{{ secrets_ssh_host_fingerprints }}"
-
 openrc_file_contents: "{{ secrets_openrc_file_contents }}"

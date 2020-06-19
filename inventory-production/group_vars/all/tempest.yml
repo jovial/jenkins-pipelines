@@ -9,36 +9,47 @@ tempest_config_contents: |
 
   [auth]
   compute_quotas = cores:-1,ram:-1
+  create_isolated_networks = False
+  connect_method = fixed
+  network_for_ssh = ilab
 
   [identity]
   v3_endpoint_type = publicURL
 
   [compute]
-  min_compute_nodes = 2
-  min_microversion = 2.1
-  max_microversion = 2.79
+  flavor_ref = b7bdadfa-83a0-46a1-a854-f780b9d296c3
+  flavor_ref_alt = b7bdadfa-83a0-46a1-a854-f780b9d296c3
+  image_ref = 58d12f97-21ed-4d12-a851-d582a56dabf2
+  image_ref_alt = 58d12f97-21ed-4d12-a851-d582a56dabf2
+  build_timeout = 1800
+  pre_create_hook = /tmp/rally-node-count.sh
+  fixed_network_name = ilab
 
   [service-clients]
   http_timeout = 600
 
   [compute-feature-enabled]
-  resize = true
-  live_migration = true
+  console_output = false
+  resize = false
+  pause = false
+  shelve = false
+  suspend = false
+  cold_migration = false
+  live_migration = false
+  vnc_console = false
+  rescue = false
+  enable_instance_password = true
+  snapshot = false
+  attach_encrypted_volume = false
 
-  [network]
-  public_network_id = a929e8db-1bf4-4a5f-a80c-fabd39d06a26
-  floating_network_name = internet
+  [service_available]
+  logs_search = false
+  logs = false
 
-  [volume]
-  min_microversion = 3.0
-  max_microversion = 3.59
+  [validation]
+  ping_timeout = 900
+  image_ssh_user = centos
+  connect_method = fixed
 
-
-# There are limited resources available and this can cause test failures with
-# "No valid host was found". Reduce the concurrency to prevent us requesting too
-# many vcpus at once. Normally this defaults to number of cores on test runner.
-tempest_concurrency: 2
-
-# Fix for: Details: {u'message': u'Quota exceeded for cores: Requested 1, but already used 0 of 0 cores', u'code': 403}
-tempest_source: https://github.com/jovial/tempest
-tempest_version: tempest-quota-23.0.0
+  [scenario]
+  dhcp_client = dhclient

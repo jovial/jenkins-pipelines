@@ -1,2 +1,0 @@
-# This corresponds to one of the seed
-tempest-runner ansible_host=10.60.150.1 ansible_user=jenkins

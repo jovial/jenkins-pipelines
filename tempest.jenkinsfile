@@ -60,8 +60,8 @@ pipeline {
             }
             sshagent(['tempest-ssh-private-key']) {
                ansiColor('xterm') {
-                  ansiblePlaybook(installation: 'tempest-ansible', inventory: "${inventory}", playbook: 'tempest.yml',
-                     vaultCredentialsId:'tempest-vault-password', extras: '-vvv', colorized: true,
+                  ansiblePlaybook(installation: 'tempest-ansible', inventory: "inventory-common", playbook: 'tempest.yml',
+                     vaultCredentialsId:'tempest-vault-password', extras: "-vvv -i ${inventory}", colorized: true,
                      extraVars: extraVars)
                }
             }
