@@ -16,39 +16,22 @@ tempest_config_contents: |-
   v3_endpoint_type = publicURL
 
   [compute]
-  flavor_ref = defbd569-ed6a-4606-b56b-b7794c74f8f3
-  flavor_ref_alt = cef8bb71-564c-4b27-b381-ee79bba4a7ab
-  image_ref = 58d12f97-21ed-4d12-a851-d582a56dabf2
-  image_ref_alt = 58d12f97-21ed-4d12-a851-d582a56dabf2
-  build_timeout = 1800
+  min_compute_nodes = 2
   fixed_network_name = ilab
+  min_microversion = 2.1
+  max_microversion = 2.79
 
   [service-clients]
   http_timeout = 600
 
   [compute-feature-enabled]
-  console_output = false
-  resize = false
-  pause = false
-  shelve = false
-  suspend = false
-  cold_migration = false
-  live_migration = false
-  vnc_console = false
-  rescue = false
-  enable_instance_password = true
-  snapshot = false
-  attach_encrypted_volume = false
-
-  [service_available]
-  logs_search = false
-  logs = false
+  resize = true
+  live_migration = true
 
   [validation]
-  ping_timeout = 900
-  image_ssh_user = centos
   connect_method = fixed
 
-  [scenario]
-  dhcp_client = dhclient
+  [volume]
+  min_microversion = 3.0
+  max_microversion = 3.59
 
