@@ -10,13 +10,12 @@ tempest_config_contents: |-
   compute_quotas = cores:-1,ram:-1
   create_isolated_networks = False
   connect_method = fixed
-  network_for_ssh = ilab
 
   [identity]
   v3_endpoint_type = publicURL
 
   [compute]
-  min_compute_nodes = 2
+  min_compute_nodes = 1
   fixed_network_name = ilab
   min_microversion = 2.1
   max_microversion = 2.79
@@ -26,10 +25,12 @@ tempest_config_contents: |-
 
   [compute-feature-enabled]
   resize = true
-  live_migration = true
+  live_migration = false
+  cold_migration = false
 
   [validation]
   connect_method = fixed
+  network_for_ssh = ilab
 
   [volume]
   min_microversion = 3.0

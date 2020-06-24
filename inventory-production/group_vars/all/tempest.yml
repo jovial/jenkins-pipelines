@@ -11,7 +11,6 @@ tempest_config_contents: |
   compute_quotas = cores:-1,ram:-1
   create_isolated_networks = False
   connect_method = fixed
-  network_for_ssh = ilab
 
   [identity]
   v3_endpoint_type = publicURL
@@ -31,6 +30,7 @@ tempest_config_contents: |
 
   [validation]
   connect_method = fixed
+  network_for_ssh = ilab
 
   [volume]
   min_microversion = 3.0
